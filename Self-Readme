@@ -1,0 +1,135 @@
+# Real-Time Fraud Detection with Apache Beam and Google Cloud
+
+## 🚀 Overview
+
+This project demonstrates a real-time fraud detection pipeline using:
+
+- **Cloud Pub/Sub** (for real-time transaction ingestion)
+- **Cloud Dataflow** (Apache Beam pipeline for processing)
+- **BigQuery** (for storing flagged fraud transactions)
+- **Cloud Storage** (for staging/temporary data)
+
+---
+
+## ✅ Project Setup Summary
+
+### 🔧 Project & Tools Used
+
+- **Project ID:** `devi-bootcamp`
+- **Service Account:** `joyuslearn@gmail.com`
+- **Region:** `us-central1`
+- **Environment:** Local development + Cloud deployment
+
+---
+
+## 📦 1. Resources Created
+
+### ✅ Pub/Sub
+
+- **Topic:** `fraud-transactions-topic`
+- **Purpose:** Receives transaction messages in JSON format
+
+### ✅ Cloud Storage Buckets
+
+- **Temp bucket:** `gs://devi-bootcamp-temp-bucket`
+- **Clean data bucket (optional):** `gs://devi-bootcamp-clean-data`
+
+```bash
+gcloud storage buckets create gs://devi-bootcamp-temp-bucket --location=us-central1
+
+
+
+
+
+
+✅ BigQuery
+Dataset: fraud_detection
+
+Table: flagged_transactions
+
+bq mk fraud_detection
+
+bq mk -t fraud_detection.flagged_transactions \
+transaction_id:STRING,user_id:STRING,amount:FLOAT,country:STRING,ip:STRING,timestamp:TIMESTAMP,fraud_reason:STRING
+---------------------------------
+💡 2. Fraud Detection Logic
+Fraud is flagged based on:
+
+High transaction amount (> 1000)
+
+Risky countries (Nigeria, Russia, etc.)
+
+------------------------------------------
+
+🧠 3. Apache Beam (Dataflow) Pipeline
+File: pipeline.py
+Purpose:
+
+Read from Pub/Sub
+
+Filter suspicious transactions
+
+Output flagged data to BigQuery
+
+------------------------------------------
+python pipeline.py \
+  --input_topic=projects/devi-bootcamp/topics/fraud-transactions-topic \
+  --output_table=devi-bootcamp:fraud_detection.flagged_transactions \
+  --project=devi-bootcamp \
+  --region=us-central1 \
+  --temp_location=gs://devi-bootcamp-temp-bucket/temp
+-------------------------------------------------------------
+
+📨 4. Publisher Script
+File: publisher.py
+Used to simulate transaction data into Pub/Sub.
+
+---------------------------------------------------------
+
+python publisher.py
+
+--------------------------------------
+
+--------------------------------------------------------------
+📌 Next Steps (Tomorrow)
+
+
+Steps
+🔍 5. Monitor & Verify
+Dataflow UI: https://console.cloud.google.com/dataflow
+
+BigQuery UI: https://console.cloud.google.com/bigquery
+
+Verify data in BigQuery table
+
+Test with more fraud scenarios
+
+Add visualization (e.g., Looker Studio)
+
+Optional: Add logging, monitoring, and dashboards
+-------------------------------------------------------------
+
+Check File/
+├── pipeline.py
+├── publisher.py
+├── requirements.txt
+└── README.md
+-----------------------------------------
+{
+  "transaction_id": "txn001",
+  "user_id": "user001",
+  "amount": 1500,
+  "country": "Nigeria",
+  "ip": "192.168.1.1",
+  "timestamp": "2025-07-18T12:00:00Z"
+}
+
+
+
+
+
+
+
+
+
+
