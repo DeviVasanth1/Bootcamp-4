@@ -1,0 +1,11 @@
+transaction_id,user_id,amount,country,ip,timestamp,fraud_reason
+txn002,user001,2700,USA,192.168.1.1,2025-07-18 10:03:00 UTC,Unusual country
+txn001,user001,2500,USA,192.168.1.1,2025-07-18 10:00:00 UTC,Unusual country
+txn003,user001,2900,USA,192.168.1.1,2025-07-18 10:06:00 UTC,Unusual country
+txn004,user002,7000,USA,192.168.2.2,2025-07-18 11:00:00 UTC,Unusual country
+txn005,user003,1500,Germany,192.168.3.3,2025-07-18 12:00:00 UTC,Unusual country
+txn006,user003,1600,USA,192.168.3.3,2025-07-18 12:05:00 UTC,Unusual country
+txn007,user004,5200,India,192.168.4.4,2025-07-18 13:00:00 UTC,Unusual country
+txn008,user004,1500,India,192.168.4.4,2025-07-18 13:02:00 UTC,Unusual country
+txn009,user004,1800,India,192.168.4.4,2025-07-18 13:04:00 UTC,Unusual country
+txn010,user004,1100,India,192.168.4.4,2025-07-18 13:06:00 UTC,Unusual country
