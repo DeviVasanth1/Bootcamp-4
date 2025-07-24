@@ -1,3 +1,80 @@
+⚙️ Prerequisites
+Ensure the following are done before running the project:
+
+Python 3.8+
+
+Google Cloud SDK installed and authenticated
+
+Enable APIs:
+
+Pub/Sub
+
+Dataflow
+
+BigQuery
+
+Cloud Storage
+---------------------------------
+# Set environment variables
+export PROJECT_ID=devi-bootcamp
+export REGION=us-central1
+export BUCKET_NAME=devi-bootcamp-temp-bucket
+export TOPIC_NAME=fraud-transactions-topic
+
+# Create Cloud Storage bucket
+gcloud storage buckets create gs://$BUCKET_NAME --location=$REGION
+
+# Create Pub/Sub topic
+gcloud pubsub topics create $TOPIC_NAME
+
+# Create BigQuery dataset
+bq mk fraud_detection
+------------------------------------------------------------
+📤 Step 1: Publish Sample Transactions
+python publisher.py
+✅ Sends sample transactions (some fraudulent) to your Pub/Sub topic.
+🧪 Step 2: Deploy Apache Beam Pipeline to Dataflow
+python pipeline.py \
+  --input_topic=projects/devi-bootcamp/topics/fraud-transactions-topic \
+  --output_table=devi-bootcamp:fraud_detection.flagged_transactions \
+  --project=devi-bootcamp \
+  --region=us-central1 \
+  --temp_location=gs://devi-bootcamp-temp-bucket/temp \
+  --runner=DataflowRunner
+✅ A streaming Dataflow job is started to process the transactions.
+✅ Step 3: Verify Dataflow is Running
+Check job status: Running
+Logs show messages like:
+Running job using Streaming Engine
+All workers have finished the startup processes and began to receive work requests.
+🔍 Step 4: Query Flagged Transactions in BigQuery
+bq query --use_legacy_sql=false '
+SELECT transaction_id, user_id, amount, country, ip, timestamp
+FROM `devi-bootcamp.fraud_detection.flagged_transactions`
+ORDER BY timestamp DESC
+LIMIT 10'
+✅ Returns latest flagged fraudulent transactions.
+📦 Step 5: Export to CSV in Cloud Storage
+# Create export bucket
+gsutil mb -l us-central1 gs://devi-bootcamp-exports
+
+# Export from BigQuery to CSV
+bq extract \
+  --destination_format=CSV \
+  'devi-bootcamp.fraud_detection.flagged_transactions' \
+  gs://devi-bootcamp-exports/flagged_transactions.csv
+# Create export bucket
+gsutil mb -l us-central1 gs://devi-bootcamp-exports
+
+# Export from BigQuery to CSV
+bq extract \
+  --destination_format=CSV \
+  'devi-bootcamp.fraud_detection.flagged_transactions' \
+  gs://devi-bootcamp-exports/flagged_transactions.csv
+✅ A CSV file is saved in the devi-bootcamp-exports bucket.
+
+
+
 # Real-Time Fraud Detection with Apache Beam and Google Cloud
 
 ## 🚀 Overview
